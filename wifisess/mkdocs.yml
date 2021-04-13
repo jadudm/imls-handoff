@@ -1,0 +1,16 @@
+site_name: IMLS WIFISESS
+nav:
+    - Home: index.md
+    - Overview: overview.md
+    - Hardware: 
+      - Pi: hardware/pi.md
+      - Wifi Adapters: hardware/wifi.md
+    - Setup:
+      - Playbook: setup/playbook.md
+    - Software:
+      - Session Counter: software/session-counter.md
+    - Server Stack:
+      - api.data.gov: stack/apidatagov.md
+      - ReVal: stack/reval.md
+      - Directus: stack/directus.md
+theme: readthedocs
