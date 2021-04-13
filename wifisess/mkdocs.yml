@@ -6,8 +6,11 @@ nav:
       - Pi: hardware/pi.md
       - Wifi Adapters: hardware/wifi.md
     - Setup:
+      - Bootstrap: setup/bootstrap.md
       - Playbook: setup/playbook.md
     - Software:
+      - Initial Configuration: software/input-initial-configuration.md
+      - Find Wifi Hardware: software/find-ralink.md
       - Session Counter: software/session-counter.md
     - Server Stack:
       - api.data.gov: stack/apidatagov.md
