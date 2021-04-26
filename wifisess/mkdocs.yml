@@ -1,6 +1,7 @@
 site_name: IMLS WIFISESS
 nav:
     - Home: index.md
+    - Repositories: repositories.md
     - Hardware:
       - Pi: hardware/pi.md
       - Wifi Adapters: hardware/wifi.md
