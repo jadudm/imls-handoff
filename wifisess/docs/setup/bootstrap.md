@@ -4,8 +4,9 @@ To set up a Raspberry Pi, a librarian first needs to install the Raspbian OS ont
 
 
 ## Installing the OS
+x
 
-<img src="/img/imager.png" align="right" width="300px" style="padding: 1em;" alt="the raspberry pi imager; CC0"/>
+<img src="../../img/imager.png" align="right" width="300px" style="padding: 1em;" alt="the raspberry pi imager; CC0"/>
 
 To setup the Raspberry Pi, we first ask the user to download the [Raspberry Pi Imager](https://www.raspberrypi.org/software/). This is a free and open tool for Mac, Windows, and Linux that aids in the creation of microSD cards for the Pi. 
 
