@@ -16,4 +16,5 @@ nav:
       - api.data.gov: stack/apidatagov.md
       - ReVal (Rabbit): stack/reval.md
       - Directus: stack/directus.md
+    - Querying Data: queryingdata.md
 theme: readthedocs
