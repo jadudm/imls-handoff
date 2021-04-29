@@ -1,16 +1,3 @@
-# Querying data
-
-There are two interfaces for querying data: GraphQL and a RESTful interface. The API is being provided by [directus.io](https://directus.io/); therefore, the API documentation for Directus applies here, and reviewing it is worthwhile. Here, we will provide a high-level summary of how to extract data from the IMLS WIFISESS pilot.
-
-## Obtain an API key
-
-First, you will need an API key. Go to [api.data.gov's signup page](https://api.data.gov/signup/) and sign up for a key. Shortly after signup, you should receive an API key via email.
-
-All requests are routed through api.data.gov. It provides us with a layer of security, key management, rate limiting, and other services we felt no need to develop (since they already existed). We recommend it highly.
-
-## Test your key
-
-FIXME the explore page
 
 ## Using graphql (GQL)
 
@@ -74,7 +61,10 @@ Here is an example from the client side in Javascript. (Do not embed your key in
     var wifiQuery = `
     {
         items {
-            wifi_v1(limit: ${SEARCH_LIMIT}, filter: {fcfs_seq_id:{_eq:"${fcfs_seq_id}"}, device_tag: {_eq: "${device_tag}"}}) {
+            wifi_v1(limit: ${SEARCH_LIMIT}, 
+                    filter: { fcfs_seq_id: {_eq: "${fcfs_seq_id}"}, 
+                              device_tag:  {_eq: "${device_tag}"}
+                    ) {
                 device_tag
                 session_id
                 event_id
@@ -117,61 +107,3 @@ where `events_v1` will be whichever table you have queried; for the pilot, `even
 The objects returned will be JSON objects containing the fields you specified. If you only indicated you wanted `device_tag`, then each object will contain one field only: `device_tag`. 
 
 **NOTE**: We have left the `pi_serial` field out of the results that come back from all queries; why? An over-abundance of caution. It is not PII (because we own the RPis in question, and it does not indicate anything about an *individual*), but we left it out of queries just the same. This applies to GQL and RESTful queries alike.
-
-## Using RESTful queries
-
-Directus [also has a REST api](https://docs.directus.io/reference/api/introduction/) for queries. We have provided two endpoints for read-only queries:
-
-1. `https://api.data.gov/TEST/10x-imls/v1/search/events/`
-2. `https://api.data.gov/TEST/10x-imls/v1/search/wifi/`
-
-These route to the appropriate endpoints in Directus, with permissions that limit the queries to being read-only. 
-
-Like the GQL queries, a query to the backend is `GET`able via HTTPS. The key is passed in the `X-Api-Key` header (as per the api.data.gov documentation), and the query itself is formed as part of the URL. 
-
-When we route the above URLs to Directus, we are rewriting `/events` to `/items/events_v1/`, and `/wifi/` to `/items/wifi_v1`. This means you cannot use the Directus API in a *general* sense; you can only use it to extract *items* from the data we've collected. (More of the Directus API can be exposed easily, but we have chosen to open the door *just wide enough* for the moment.)
-
-For example, to extract objects from the `events_v1` table, we would `GET` our query to 
-
-`https://api.data.gov/TEST/10x-imls/v1/search/events/`
-
-and the last 100 events from that table would be returned. If we want to [restrict the query](https://docs.directus.io/reference/api/query/) in some way, we can use global query parameters from Directus.
-
-`https://api.data.gov/TEST/10x-imls/v1/search/events/?fields=session_id`
-
-will return the last 100 events, but only the `session_id` field. It is also [possible to filter events](https://docs.directus.io/reference/api/query/#filter):
-
-
-`https://api.data.gov/TEST/10x-imls/v1/search/events/?filter[fcfs_seq_id][_eq]="ME0064-001`
-
-would return events from one of the two dev/test RPis. Here is a `curl` command that uses this interface:
-
-```
-FILTER1="filter\[tag\]\[_eq\]=startup"
-FILTER2="filter\[fcfs_seq_id\]\[_eq\]=ME0064-001"
-curl \
-    -X GET \
-    -H "X-Api-Key: $APIDATAGOVKEY" \
-    "https://api.data.gov/TEST/10x-imls/v1/search/events/?$FILTER1&$FILTER2"
-```
-
-That query should, if the environment variable `APIDATAGOVKEY` is set, return the last 100 events for the matching `fcfs_seq_id` and with the tag `startup`. (The `tag` is an *event tag*, and tells us *what kind* of event was being logged.) As with GQL, the results come back as an array of JSON objects. 
-
-For testing, we pipe the results through `jq` for prettying. And, if you grab some additional tools, you can even convert the JSON into CSV. Assuming you `go get` the program [json2csv](https://github.com/jehiah/json2csv) and put the above code into a file called `q.curl`:
-
-```
-./q.curl | jq -c -r ".data[]" | ~/go/bin/json2csv -k servertime,session_id,tag
-```
-
-you can get a CSV version of the same data. (Of course, in an application, you could either use a library to do this, or you would walk the resulting JSON objects and convert them to CSV yourself -- if you needed the data in a tabular form. Libraries like `pandas` have tooling built-in to convert arrays of JSON objects to dataframes, for example.)
-
-Note, when working with `curl` on the command line, that significant escaping of brackets becomes necessary. In other languages, "your mileage may vary."
-
-## That's It
-
-In summary:
-
-1. Obtain an API key from api.data.gov.
-2. Formulate queries using GQL or RESTful `GET`s.
-3. Process the resulting JSON.
-

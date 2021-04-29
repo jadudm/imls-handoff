@@ -16,5 +16,11 @@ nav:
       - api.data.gov: stack/apidatagov.md
       - ReVal (Rabbit): stack/reval.md
       - Directus: stack/directus.md
-    - Querying Data: queryingdata.md
+    - Querying Data: 
+      - Obtain a key: queries/obtainkey.md
+      - Test your key: queries/testkey.md
+      - Using GraphQL: queries/usinggql.md
+      - Using REST: queries/viarest.md
+      - Summary: queries/summary.md
+
 theme: readthedocs
